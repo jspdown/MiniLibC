@@ -1,0 +1,136 @@
+
+registre:
+	rax	-> accumulateur
+	rbx	-> base register
+	rcx	-> counter register
+	rdx	-> data register
+	rsi	-> source index
+	rdi	-> destination index
+
+	rip	-> instruction pointer
+	rbp	-> base pointer
+	rsp	-> stack pointer
+
+stack:
+
+ des adresse hautes vers les adresses basses
+
+     ______________________ <- stack origin
+     |                    |
+     |     data           |
+     |                    |
+     |     data           |
+     |                    |
+     |     data           |
+     |                    |
+     |     data           |
+     |                    |
+     |                    |
+     |                    |
+     |                    |
+     |                    |
+     |____________________| <- stack pointer
+
+
+ - rsp pointe sur la prochaine case utilise par un push
+ - rbp pointe sur le debut du cadre de pile de la fonction courante
+
+ - passage d'arument sur la stack
+
+syntaxe:
+
+mnemonique	-> instruction lie a un opcode
+operande	-> argument d'une instruction, separe par des virgules
+commentaire	-> commence par ';'
+label		-> un repere sur le programme (loop, if..)
+directive	-> info pour le compilateur
+		   db dword .text .data global bits
+
+mode d'adressage des instruction:
+     registre	-> mov rax, rbx
+     direct	-> mov rax, 0x00001
+     immediat	-> mov rax, 4
+     indirect	-> mov rax, [rbx]
+
+appel de fonction externe:
+      entier et ptr place dans:
+      	     rdi -> rsi -> rdx -> rcx -> r8 -> r9
+      float
+	     xmm0 -> ... -> xmm7
+      var arg
+      	     placer nbr arg dans rax 
+     si plus de 6 ou 8 arg placer dans la stack
+      valeurs de retour a placer dans rax ou xmm0
+
+appel de syscall:
+      arguments passe comme pour les fionction externe sauf le 4eme 
+      param passe dans r10
+      on met le num du syscall dans rax puis a appel 'syscall'
+
+helloWord.s:
+
+	global main		;; export du symbole
+	extern printf		;; import du symbole printf
+
+	;;code
+	section .text		;; delecaration de la section code
+
+	
+main:				;; declaration du label main
+	push rbp		;; prologue
+	mov rbp, rsp		;; stock le stack pointer pour pouvoir le
+				   remetre en place
+
+	move rdi, FormatStr	;; passge du premier argument de printf
+	     	  		   "plop %d"
+	call printf		;; appel a printf
+
+
+	mov rsp, rbp		;; epilogue, remet le stack pointer a l'origine
+	pop rbp
+
+	mov rax, 60		;; 60 -> exit
+	xor rdi, rdi		;; met rdi a 0 (exit(0))
+	syscall			;; appel a exit(rax)
+
+	ret			;; sort de la fonction
+
+	;;read-only
+	section .rodata		;; declaraction de la section des donne statique
+
+	FormatStr db 'Hello Word !', 0Ah, 0
+
+utiliser GDB:
+	 set dissass intel:
+	     set disassembly-flavor intel
+	 disassembly:
+	     disassemble nom_function
+	 breakpoint:
+	     b *addr
+	 affichage du content:
+	     x/x $rbx
+	 str:
+	     x/s $rbx
+	 prochaine instruction:
+	     ni
+	 continuer execution:
+	     continue
+
+les jump:
+    utiliser cmp pour setter le flag de comparaison
+    inconditionnel:
+	- jmp addr
+    conditionel:
+	- ja		-> si >
+	- jnc		-> si C=0 (>=)
+	- jc		-> si C=1 (<)
+	- jz		-> si Z=1 (si egalite avec CMP ou soustraction, flag ZF=0)
+	- jnz		-> si Z=0 (!=)
+	- jp		-> si P=1 (parite paire (even))
+	- jnp		-> si P=0 (odd = impaire)
+
+
+optimisation faites par le gcc:
+	     - utiliser un registre a 0 pour faire les cmp
+	     - utiliser lea pour faire des operation multiple: lea rax, [rsi + 45 * 2]
+	     - utilisation du xor pour init a 0: xor rsi, rsi -> rsi = 0
