@@ -16,7 +16,7 @@ my_strchr_loop:			; FONCTION PRINCIPALE
 	jmp	my_strchr_loop	; on boucle
 
 my_strchr_end:			; FONCTION DE FIN DE CHAINE
-	cmp	byte [rsi], 0	; comparaison av[2] avec '\0'
+	cmp	sil, 0		; comparaison av[2] avec '\0'
 	jz	return_pointer	; si av[2] == '\0' on va a return_pointer
 	xor	rax, rax	; sinon on met ptr == NULL
 
