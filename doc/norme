@@ -134,3 +134,18 @@ optimisation faites par le gcc:
 	     - utiliser un registre a 0 pour faire les cmp
 	     - utiliser lea pour faire des operation multiple: lea rax, [rsi + 45 * 2]
 	     - utilisation du xor pour init a 0: xor rsi, rsi -> rsi = 0
+
+flag (registres d'etat):
+     - CF(Carry flag): indicateur de retenue (operation)  (STC ou CLC)
+     - OF(overflow flag)
+     - SF(sign flag): bit de poid fort(donne le signe du nbr relatif)
+     - ZF(zero flag): si null( soustraction ou cmp)
+
+     jmp:
+	- ja	-> ZF=0 et CF=0		 (>)
+	- jb	-> CF=1			 (<)
+	- jbe	-> ZF=1 ou CF=1		 (<=)
+	- je	-> ZF=1			 (=)
+	- jg	-> ZF=0 et SF=OF	 (>)
+	- jle	-> ZF=1 ou SF!=OF	 (<=)
+	- jne	-> ZF=0			 (!=)

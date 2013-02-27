@@ -29,7 +29,7 @@ $(OBJ_S):	$(OBJ_PATH)%.o: $(SRC_PATH)%.s
 		$(CASM) -f $(ARCH) $< -o $@ -g
 
 $(NAME):	$(OBJ_S) $(OBJ_C)
-		$(CC) $(OBJ_S) $(OBJ_C) -o $(NAME) 
+		$(CC) $(OBJ_S) $(OBJ_C) -o $(NAME)  -g
 
 clean:
 		$(RM) $(OBJ_S) $(OBJ_C)

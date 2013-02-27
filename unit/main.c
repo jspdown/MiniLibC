@@ -1,5 +1,6 @@
 
-#include	<stdio.h>
+int	my_strlen(char *);
+char	*my_strchr(char*, int);
 
 int	main()
 {
@@ -7,8 +8,10 @@ int	main()
   printf("size = %d\n", my_strlen("lolilol\n"));
 
   /*  strchr  */
-  char	*ptr;
-  ptr = my_strchr("Coucou", 'C');
+  //char	*ptr;
+  char *res = my_strchr("CouCou", 'o');
+  printf("%s\n", res);
+  //  ptr =
   /* if (ptr) */
   /*   printf("ptr = %s\n", ptr); */
   /* else */
